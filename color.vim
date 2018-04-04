@@ -1,3 +1,9 @@
+function! ToHSL() 
+    call ColorHexToRGB()
+    call ColorRGBToHSL()
+
+endfunction
+
 function! ColorHexToRGB()
     let lnum = 1
     while lnum <= line("$")
@@ -15,26 +21,6 @@ function! ColorRGBToHSL()
     endwhile
 endfunction
 
-function! AddHslNumberSingle(lnum, addition)
-    let pattern = 'hsla\?\s*(\s*\(\d\{0,3}\)\s*,'
-    let allstr = getline(a:lnum)
-    let h_old = matchlist(allstr, pattern)
-
-    while h_old != []
-
-        let h_new = (h_old[1] + a:addition) % 360
-        let h_str_new = 'hslat(' . h_new . ','
-
-        let new_line_content = substitute(allstr, h_old[0], h_str_new, "")
-        let result = setline(a:lnum, new_line_content)
-
-        let allstr = getline(a:lnum)
-        let h_old = matchlist(allstr, pattern)
-
-    endwhile 
-
-endfunction
-
 function! AddHSLNumber(addition)
     let lnum = 1
     while lnum <= line("$")
@@ -46,7 +32,6 @@ function! AddHSLNumber(addition)
     %s/hslat(/hsla(/g
     call winrestview(l:save)
 endfunction
-
 
 function! ColorHexToRGBSingle(line_number)
     let hex_color = []
@@ -140,4 +125,23 @@ function! RGBToHSLNumber(rgb)
     let l = l  * 100 / 256
     return [h, s, l, d, v, m]
 
+endfunction
+
+function! AddHslNumberSingle(lnum, addition)
+    let pattern = 'hsla\?\s*(\s*\(\d\{0,3}\)\s*,'
+    let allstr = getline(a:lnum)
+    let h_old = matchlist(allstr, pattern)
+
+    while h_old != []
+
+        let h_new = (h_old[1] + a:addition) % 360
+        let h_str_new = 'hslat(' . h_new . ','
+
+        let new_line_content = substitute(allstr, h_old[0], h_str_new, "")
+        let result = setline(a:lnum, new_line_content)
+
+        let allstr = getline(a:lnum)
+        let h_old = matchlist(allstr, pattern)
+
+    endwhile 
 endfunction
